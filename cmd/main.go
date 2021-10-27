@@ -14,7 +14,7 @@ func main() {
 	// TODO pass all the arguments to docker-compose
 	// TODO parse the local docker-compose file to find the docker images and contexts
 
-	dependenciesPaths, err := getLocalDependencies(os.Args[1]) // TODO find the docker file
+	dependenciesPaths, err := getLocalDependencies("./build/docker/hello-world.Dockerfile") // TODO find the docker file
 	if err != nil {
 		fmt.Printf("Error: %v", err) // TODO
 		return
