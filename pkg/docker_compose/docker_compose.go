@@ -6,6 +6,8 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
+// Returns the built object of each docker-compose service that is built locally
+// All the paths in this object are absolute
 func GetServiceBuilds() (map[string]types.BuildConfig, error) {
 	// TODO use CommandContext
 

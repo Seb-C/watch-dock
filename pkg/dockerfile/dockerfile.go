@@ -2,13 +2,19 @@ package dockerfile
 
 import (
 	"bytes"
+	"github.com/compose-spec/compose-go/types"
 	"github.com/moby/buildkit/frontend/dockerfile/parser"
 	"github.com/moby/buildkit/frontend/dockerfile/instructions"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
-func GetLocalDependencies(dockerfilePath string) ([]string, error) {
+// Returns all the local dependencies of the given dockerfile
+// A dependency is a source params in a COPY or ADD instruction.
+// The returned data is not transformed, it's a filepath.Match pattern
+// whose meaning is relative to the context of the build.
+func GetRawDependencies(dockerfilePath string) ([]string, error) {
 	dockerfile, err := os.ReadFile(dockerfilePath)
 	if err != nil {
 		return nil, err
@@ -51,6 +57,59 @@ func GetLocalDependencies(dockerfilePath string) ([]string, error) {
 			continue
 		}
 	}
+
+	return paths, nil
+}
+
+// Transforms the given filepath.Match patterns in a list of existing files
+// on the current filesystem. The output is still relative to the context.
+func GetContextualizedFilePaths(context string, patterns []string) ([]string, error) {
+	originalWorkDir, err := os.Getwd()
+	if err != nil {
+		return nil, err
+	}
+
+	if err := os.Chdir(context); err != nil {
+		return nil, err
+	}
+	defer os.Chdir(originalWorkDir)
+
+	matchingPaths := make([]string, 0)
+	for _, dependencyPath := range patterns {
+		foundPaths, err := filepath.Glob(dependencyPath)
+		if err != nil {
+			return nil, err
+		}
+
+		if foundPaths != nil {
+			matchingPaths = append(matchingPaths, foundPaths...)
+		}
+	}
+
+	return matchingPaths, nil
+}
+
+func UncontextualizePaths(context string, paths []string) ([]string) {
+	outPaths := make([]string, 0, len(paths))
+	for _, path := range paths {
+		outPaths = append(outPaths, filepath.Join(context, path))
+	}
+
+	return outPaths
+}
+
+func GetAbsoluteDockerfileDependencies(build types.BuildConfig) ([]string, error) {
+	rawDependencies, err := GetRawDependencies(build.Dockerfile)
+	if err != nil {
+		return nil, err
+	}
+
+	contextualizedPaths, err := GetContextualizedFilePaths(build.Context, rawDependencies)
+	if err != nil {
+		return nil, err
+	}
+
+	paths := UncontextualizePaths(build.Context, contextualizedPaths)
 
 	return paths, nil
 }
