@@ -1,22 +1,26 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"github.com/Seb-C/watch-dock/pkg/dockerfile"
 	dockerCompose "github.com/Seb-C/watch-dock/pkg/docker_compose"
 )
 
 func main() {
-	serviceBuilds, err := dockerCompose.GetServiceBuilds() // TODO
+	// TODO add the docker-compose command details in the ctx object
+	ctx := context.TODO() // TODO
+
+	serviceBuilds, err := dockerCompose.GetServiceBuilds(ctx) // TODO
 	if err != nil {
 		fmt.Printf("Error: %v", err) // TODO
 		return
 	}
 
-	// TODO context object (of golang context package), containing the docker-compose command details
 	// TODO check docker-compose version
 	// TODO pass all the arguments to docker-compose
 	// TODO unit tests
+	// TODO document and comment
 	// TODO logging
 
 	pathsToWatch := map[string]struct{}{}
