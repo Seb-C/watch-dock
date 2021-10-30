@@ -16,7 +16,7 @@ func main() {
 		return
 	}
 
-	// TODO test the arguments passed to docker-compose + convenient way to test
+	// TODO test the arguments passed to docker-compose + have a convenient way to test
 	// TODO check docker-compose version
 	// TODO unit tests
 	// TODO document and comment
