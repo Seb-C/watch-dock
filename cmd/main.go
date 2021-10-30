@@ -1,24 +1,23 @@
 package main
 
 import (
-	"context"
 	"fmt"
+	"github.com/Seb-C/watch-dock/pkg/context"
 	"github.com/Seb-C/watch-dock/pkg/dockerfile"
 	dockerCompose "github.com/Seb-C/watch-dock/pkg/docker_compose"
 )
 
 func main() {
-	// TODO add the docker-compose command details in the ctx object
-	ctx := context.TODO() // TODO
+	ctx := context.ParseContext()
 
-	serviceBuilds, err := dockerCompose.GetServiceBuilds(ctx) // TODO
+	serviceBuilds, err := dockerCompose.GetServiceBuilds(ctx)
 	if err != nil {
 		fmt.Printf("Error: %v", err) // TODO
 		return
 	}
 
+	// TODO test the arguments passed to docker-compose + convenient way to test
 	// TODO check docker-compose version
-	// TODO pass all the arguments to docker-compose
 	// TODO unit tests
 	// TODO document and comment
 	// TODO logging
