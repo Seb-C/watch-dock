@@ -8,6 +8,7 @@ import (
 )
 
 func main() {
+	// TODO explicitly declare the possible command arguments rather than allowing anything after the terminator?
 	ctx := context.ParseContext()
 
 	serviceBuilds, err := dockerCompose.GetServiceBuilds(ctx)
@@ -16,7 +17,7 @@ func main() {
 		return
 	}
 
-	// TODO test the arguments passed to docker-compose + have a convenient way to test
+	// TODO avoid the params for docker-compose to break the commands?
 	// TODO check docker-compose version
 	// TODO unit tests
 	// TODO document and comment

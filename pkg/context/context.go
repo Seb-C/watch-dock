@@ -11,7 +11,7 @@ var _ context.Context = Context{}
 
 type Context struct{
 	context.Context
-	dockerComposeArgs []string
+	DockerComposeArgs []string
 }
 
 func ParseContext() Context {
@@ -30,11 +30,4 @@ func ParseContext() Context {
 		context.Background(),
 		dockerComposeArgs,
 	}
-}
-
-func (ctx Context) DockerComposeArgs(args... string) []string {
-	out := make([]string, 0, len(args)+len(ctx.dockerComposeArgs))
-	out = append(out, ctx.dockerComposeArgs...)
-	out = append(out, args...)
-	return out
 }

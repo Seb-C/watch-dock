@@ -1,8 +1,6 @@
 package docker_compose
 
 import (
-	"fmt"
-	"os/exec"
 	"github.com/Seb-C/watch-dock/pkg/context"
 	"github.com/compose-spec/compose-go/types"
 	yaml "gopkg.in/yaml.v2"
@@ -11,16 +9,9 @@ import (
 // Returns the built object of each docker-compose service that is built locally
 // All the paths in this object are absolute
 func GetServiceBuilds(ctx context.Context) (map[string]types.BuildConfig, error) {
-	cmd := exec.CommandContext(ctx, "docker-compose", ctx.DockerComposeArgs("config")...)
-
-	// TODO function to conveniently do that? And remove logic from the context
-	output, err := cmd.Output()
+	output, err := CallOnce(ctx, "config")
 	if err != nil {
-		if exitErr, isExitErr := err.(*exec.ExitError); isExitErr {
-			return nil, fmt.Errorf("Error calling docker-compose: %w\n%v", exitErr, string(exitErr.Stderr))
-		} else {
-			return nil, err
-		}
+		return nil, err
 	}
 
 	config := struct{
