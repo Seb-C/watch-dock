@@ -3,6 +3,7 @@ package context
 import (
 	"context"
 	"flag"
+	"os"
 )
 
 // Compile-time check that the type implements the interface
@@ -16,9 +17,11 @@ type Context struct{
 func ParseContext() Context {
 	flag.Parse()
 
+	// Getting the arguments after the terminator from the raw input
+	// because the flags package does not behave as expected
 	dockerComposeArgs := []string{}
-	for argIndex, arg := range flag.Args() {
-		if arg == "-" || arg == "--" {
+	for argIndex, arg := range os.Args {
+		if arg == "--" {
 			dockerComposeArgs = flag.Args()[argIndex+1:]
 		}
 	}
